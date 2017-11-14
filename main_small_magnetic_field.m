@@ -244,8 +244,6 @@ for i = linspace(0,num_phi_fit-1,num_phi_fit)
     .*airy(1,-fs_test_m(radius_exp))).^2;
     amp_fit_boundary = [amp_fit_boundary amp_test_fit'];
 end
-
-
 % x_axis = ymn*L_au;
 % y_axis = ymn*L_au;
 T_cpu_2 = cputime;
