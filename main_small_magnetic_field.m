@@ -152,7 +152,7 @@ num_theta_fit =200;
 number_fit_data = num_theta_fit *num_phi_fit;
 xmn_test = zeros(1,number_fit_data);
 ymn_test = zeros(1,number_fit_data);
-initial_theta = linspace(720/1000*pi/2, 930/1000*pi/2,number_fit_data);
+initial_theta = linspace(720/1000*pi/2, 930/1000*pi/2,num_theta_fit);
 flag    = zeros(1,number_fit_data);
 flag2   = zeros(1,number_fit_data);
 % amp_test_1 = zeros(1,number_fit_data);
@@ -253,4 +253,4 @@ T_cpu_2 = cputime;
 x_plot = [xmn*L_au x_fit_boundary];
 y_plot = [ymn*L_au y_fit_boundary];
 amp_plot = [amp_airya amp_fit_boundary];
-% scatter(x_plot,y_plot,3,amp_plot,'filled')
+scatter(x_plot,y_plot,3,amp_plot,'filled')
