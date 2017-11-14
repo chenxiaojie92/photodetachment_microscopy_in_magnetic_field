@@ -43,7 +43,7 @@ tmax = solve(zSol(t) ==0, t);% two solution ,second result above zero can be use
 %%
 fun_s = p_x*real(vx) + p_y*vy + real(p_z)*real(vz);%-e*zSol*vx*B;
 S = int( fun_s ,t, 0,real(tmax(2)));
-display(S);
+% display(S);
 xSol_sin=rewrite(xSol,'sincos');
 xSol_real= simplify(xSol_sin,'Criterion','preferReal');
 zSol_sin=rewrite(zSol,'sincos');
@@ -52,7 +52,7 @@ vx_real = simplify(rewrite(vx,'sincos'),'Criterion','preferReal');
 p_z_real = simplify(rewrite(p_z,'sincos'),'Criterion','preferReal');
 vz_real = simplify(rewrite(vz,'sincos'),'Criterion','preferReal');
 Jt= det(jacobian([xSol_real ySol zSol_real],[t theta phi]));
-display(Jt);
+% display(Jt);
 %%
 E = 8.352*10^-5/27.211385     ;  %a.u. 83.52 uev
 F = 2.91*10^2/(5.142206*10^11);  %a.u. 291 v/m
@@ -76,11 +76,11 @@ R =100;
 Jacob = matlabFunction(subs(Jt));%%(t phi theta)
 %% second part fringes on the detated plane
 T_cpu_1 = cputime;
-num_phi = 1000;
+num_phi = 50;
 num_theta   = 200;
 num_point = num_phi*num_theta;
 initial_angle = zeros(num_point,2);%[theta phi]
-Matrix_a = linspace(0,2*pi,num_phi);
+Matrix_a = linspace(0,pi,num_phi);
 Matrix_b = [];
 ma = linspace(pi/2000,pi/2*930/1000,num_theta); %%set theta range pi/20000, 
 % ma = linspace(pi/2*800/1000,pi/2*970/1000,num_theta);
@@ -136,11 +136,11 @@ for i = linspace(1,num_point,num_point)
 %     amp_m(i) = amp2(i) -amp1(i);
 %     amp_p(i) = amp2(i) +amp1(i);
 % %   p0-wave
-%     amp_m(i) = amp2(i)*cos(theta_2(i)) - amp1(i)*cos(initial_angle(i,1));
-%     amp_p(i) = amp2(i)*cos(theta_2(i)) + amp1(i)*cos(initial_angle(i,1));
+    amp_m(i) = amp2(i)*cos(theta_2(i)) - amp1(i)*cos(initial_angle(i,1));
+    amp_p(i) = amp2(i)*cos(theta_2(i)) + amp1(i)*cos(initial_angle(i,1));
 % %     p1-wave
-    amp_m(i) = amp2(i)*sin(theta_2(i))*exp(1i*phi_2(i)) -amp1(i)*sin(initial_angle(i,1))*exp(1i*initial_angle(i,2));
-    amp_p(i) = amp2(i)*sin(theta_2(i))*exp(1i*phi_2(i)) +amp1(i)*sin(initial_angle(i,1))*exp(1i*initial_angle(i,2));
+%     amp_m(i) = amp2(i)*sin(theta_2(i))*exp(1i*phi_2(i)) -amp1(i)*sin(initial_angle(i,1))*exp(1i*initial_angle(i,2));
+%     amp_p(i) = amp2(i)*sin(theta_2(i))*exp(1i*phi_2(i)) +amp1(i)*sin(initial_angle(i,1))*exp(1i*initial_angle(i,2));
     gamma(i) = sqrt(pi)*exp(1i*sum_s(i))*amp_p(i)*zeta(i)^(1/4);
     delta(i) = sqrt(pi)*exp(1i*sum_s(i))*amp_m(i)*zeta(i)^(-1/4);
     amp_airya(i) = abs(gamma(i)*airy(-zeta(i))-1i*delta(i)*airy(1,-zeta(i)))^2;
@@ -171,7 +171,7 @@ options = optimoptions('fsolve','Display','none');
 options.Algorithm = 'levenberg-marquardt';
 options.StepTolerance = 1.00e-8;
 for j = linspace(0,num_phi_fit-1,num_phi_fit)
-    phi_fit = j*2*pi/(num_phi_fit-1);
+    phi_fit = j*pi/(num_phi_fit-1);
     for i  = linspace(1,num_theta_fit,num_theta_fit)
         tx_test = real(tmax_num(0,initial_theta(i )));
         radius = xSol_num(tx_test,0,initial_theta(i )) - xmn(1);
