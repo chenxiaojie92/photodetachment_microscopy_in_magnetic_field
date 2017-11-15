@@ -76,7 +76,7 @@ R =100;
 Jacob = matlabFunction(subs(Jt));%%(t phi theta)
 %% second part fringes on the detated plane
 T_cpu_1 = cputime;
-num_phi = 50;
+num_phi = 500;
 num_theta   = 200;
 num_point = num_phi*num_theta;
 initial_angle = zeros(num_point,2);%[theta phi]
@@ -234,9 +234,9 @@ for i = linspace(0,num_phi_fit-1,num_phi_fit)
     [fs_test_p , gof_test_sp] = fit(radius_test3,sum_s_test1,'poly1');
     [fs_test_m , gof_test_sm] = fit(radius_test4,zeta_test1,'poly1');
 %     radius_exp = linspace(radius_test(1),3*(radius_test(end) - radius_test(1))+radius_test(end),300);
-    radius_exp = linspace(radius_test(1),0.9*10^-3,500);
-    x_fit = radius_exp*cos(i*2*pi/(num_phi_fit-1))+xmn(1)*L_au;
-    y_fit = radius_exp*sin(i*2*pi/(num_phi_fit-1));
+    radius_exp = linspace(radius_test(1),0.9*10^-3,200);
+    x_fit = radius_exp*cos(i*pi/(num_phi_fit-1))+xmn(1)*L_au;
+    y_fit = radius_exp*sin(i*pi/(num_phi_fit-1));
     x_fit_boundary = [x_fit_boundary x_fit];
     y_fit_boundary = [y_fit_boundary y_fit];
     amp_test_fit = abs(sqrt(pi)*exp(1i*fs_test_p(radius_exp)).*f_test_p(radius_exp) ...
@@ -258,3 +258,4 @@ scatter(x_plot,y_plot,3,amp_plot,'filled')
 mapa = gray;
 mapb = flipud(mapa);
 colormap(mapb);
+axis equal;
