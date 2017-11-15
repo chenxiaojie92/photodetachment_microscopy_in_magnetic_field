@@ -217,8 +217,6 @@ for i = linspace(0,num_phi_fit-1,num_phi_fit)
     [fit_test_m1 ,radius_test2] = prepareCurveData(fit_test_m,radius_test);
     [sum_s_test1 , radius_test3] = prepareCurveData(sum_s_test(1+i*num_theta_fit:(i+1)*num_theta_fit),radius_test);
     [zeta_test1 ,radius_test4] = prepareCurveData(zeta_test(1+i*num_theta_fit:(i+1)*num_theta_fit),radius_test);
-    
-    
     [f_test_p ,gof_test_p] = fit(radius_test1,fit_test_p1,'poly2') ;
 %     figure();
 %     plot(f_test_p,radius_test,fit_test_p)
@@ -248,14 +246,20 @@ end
 % y_axis = ymn*L_au;
 T_cpu_2 = cputime;
 % display(T_cpu_2 - T_cpu_1);
-%% Last part save the data and plot out the results
+%% Last part save the data and plot out the results and save the datas
 % save fit2d_p1_B11.mat
 x_plot = [xmn*L_au x_fit_boundary];
 y_plot = [ymn*L_au y_fit_boundary];
 amp_plot = [amp_airya amp_fit_boundary];
+x_plot_f = [x_plot x_plot];
+y_plot_f = [y_plot -y_plot];
+amp_plot_f = [amp_plot amp_plot];
 figure();
-scatter(x_plot,y_plot,3,amp_plot,'filled')
+% scatter(x_plot,y_plot,3,amp_plot,'filled')
+scatter(x_plot_f,y_plot_f,3,amp_plot_f,'filled')
 mapa = gray;
 mapb = flipud(mapa);
 colormap(mapb);
+box on;
 axis equal;
+%save B13_p0.mat y_plot_f x_plot_f amp_plot_f
