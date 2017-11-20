@@ -40,7 +40,7 @@ p_y = Bs.p_y ;
 p_z = Bs.p_z ;
 % Get the time reaching the detecting plane
 tmax = solve(zSol(t) ==0, t);% two solution ,second result above zero can be used
-%%
+
 fun_s = p_x*real(vx) + p_y*vy + real(p_z)*real(vz);%-e*zSol*vx*B;
 S = int( fun_s ,t, 0,real(tmax(2)));
 % display(S);
@@ -53,7 +53,7 @@ p_z_real = simplify(rewrite(p_z,'sincos'),'Criterion','preferReal');
 vz_real = simplify(rewrite(vz,'sincos'),'Criterion','preferReal');
 Jt= det(jacobian([xSol_real ySol zSol_real],[t theta phi]));
 % display(Jt);
-%%
+%% Setting the parameter
 E = 8.352*10^-5/27.211385     ;  %a.u. 83.52 uev
 F = 2.91*10^2/(5.142206*10^11);  %a.u. 291 v/m
 B = 1.3*10^-6/(2.35*10^5)    ;  %a.u. 1.1 uT
@@ -63,7 +63,6 @@ z0 = 0.5 / L_au               ;  %a.u. 0.5 m
 e= 1;
 m =1;
 omega = B*e/m                 ;  %period
-%%
 xSol_num = matlabFunction(subs(xSol_real));%(t, phi, theta)
 ySol_num = matlabFunction(subs(ySol));%(t, phi, theta)
 zSol_num = matlabFunction(subs(zSol));
@@ -74,7 +73,7 @@ yDetect = matlabFunction(subs(ySol(tmax(2)))); %this number is in S.I.
 action =matlabFunction(subs(S));%(phi, theta)
 R =100;
 Jacob = matlabFunction(subs(Jt));%%(t phi theta)
-%% second part fringes on the detated plane
+%% second part Fringes on the detated plane
 T_cpu_1 = cputime;
 num_phi = 500;
 num_theta   = 200;
@@ -136,19 +135,18 @@ for i = linspace(1,num_point,num_point)
 %     amp_m(i) = amp2(i) -amp1(i);
 %     amp_p(i) = amp2(i) +amp1(i);
 % %   p0-wave
-    amp_m(i) = amp2(i)*cos(theta_2(i)) - amp1(i)*cos(initial_angle(i,1));
-    amp_p(i) = amp2(i)*cos(theta_2(i)) + amp1(i)*cos(initial_angle(i,1));
+%     amp_m(i) = amp2(i)*cos(theta_2(i)) - amp1(i)*cos(initial_angle(i,1));
+%     amp_p(i) = amp2(i)*cos(theta_2(i)) + amp1(i)*cos(initial_angle(i,1));
 % %     p1-wave
-%     amp_m(i) = amp2(i)*sin(theta_2(i))*exp(1i*phi_2(i)) -amp1(i)*sin(initial_angle(i,1))*exp(1i*initial_angle(i,2));
-%     amp_p(i) = amp2(i)*sin(theta_2(i))*exp(1i*phi_2(i)) +amp1(i)*sin(initial_angle(i,1))*exp(1i*initial_angle(i,2));
+    amp_m(i) = amp2(i)*sin(theta_2(i))*exp(1i*phi_2(i)) -amp1(i)*sin(initial_angle(i,1))*exp(1i*initial_angle(i,2));
+    amp_p(i) = amp2(i)*sin(theta_2(i))*exp(1i*phi_2(i)) +amp1(i)*sin(initial_angle(i,1))*exp(1i*initial_angle(i,2));
     gamma(i) = sqrt(pi)*exp(1i*sum_s(i))*amp_p(i)*zeta(i)^(1/4);
     delta(i) = sqrt(pi)*exp(1i*sum_s(i))*amp_m(i)*zeta(i)^(-1/4);
     amp_airya(i) = abs(gamma(i)*airy(-zeta(i))-1i*delta(i)*airy(1,-zeta(i)))^2;
 end
 %% third part fitting part the fitting area is chosen by the determinating the number of the initial_theta.
-
 num_phi_fit =num_phi ; 
-num_theta_fit =200;
+num_theta_fit =100;
 number_fit_data = num_theta_fit *num_phi_fit;
 xmn_test = zeros(1,number_fit_data);
 ymn_test = zeros(1,number_fit_data);
@@ -193,19 +191,24 @@ for j = linspace(0,num_phi_fit-1,num_phi_fit)
         sum_s_test(i + j*num_theta_fit)  = s_test_1 +s_test_2;
         zeta_test(i + j*num_theta_fit) = (3/4*abs(s_test_1 - s_test_2))^(2/3);
     %     vaiables below is useful
-    % % for s-wave firstly
-    %     amp_test_m(i + j*num_theta_fit) = amp_test_2(i + j*num_theta_fit) - amp_test_1(i + j*num_theta_fit);
-    %     amp_test_p(i + j*num_theta_fit) = amp_test_2(i + j*num_theta_fit) + amp_test_1(i + j*num_theta_fit);
-    % %     for p0-wave
-        amp_test_m(i + j*num_theta_fit) = amp_test_2*cos(mm2(2))-amp_test_1*cos(mm1(2));
-        amp_test_p(i + j*num_theta_fit) = amp_test_2*cos(mm2(2))+amp_test_1*cos(mm1(2));
+    % % for s-wave 
+%         amp_test_m(i + j*num_theta_fit) = amp_test_2 - amp_test_1;
+%         amp_test_p(i + j*num_theta_fit) = amp_test_2 + amp_test_1;
+    % % for p0-wave
+%         amp_test_m(i + j*num_theta_fit) = amp_test_2*cos(mm2(2))-amp_test_1*cos(mm1(2));
+%         amp_test_p(i + j*num_theta_fit) = amp_test_2*cos(mm2(2))+amp_test_1*cos(mm1(2));
+    % % for p1-wave
 
+        amp_test_m(i + j*num_theta_fit) = amp_test_2*sin(mm2(2))*exp(1i*mm2(1))-amp_test_1*sin(mm1(2))*exp(1i*mm1(1));
+        amp_test_p(i + j*num_theta_fit) = amp_test_2*sin(mm2(2))*exp(1i*mm2(1))+amp_test_1*sin(mm1(2))*exp(1i*mm1(1));
+    
         gamma_test = sqrt(pi)*exp(1i*sum_s_test(i + j*num_theta_fit))*amp_test_p(i + j*num_theta_fit)*zeta_test(i + j*num_theta_fit)^(1/4);
         delta_test = sqrt(pi)*exp(1i*sum_s_test(i + j*num_theta_fit))*amp_test_m(i + j*num_theta_fit)*zeta_test(i + j*num_theta_fit)^(-1/4);
         amp_airya_test(i + j*num_theta_fit) = abs(gamma_test*airy(-zeta_test(i + j*num_theta_fit))-1i*delta_test*airy(1,-zeta_test(i + j*num_theta_fit)))^2;
     end
 end
 warning('off','all')
+% the connectiong between $\phi_{sys}$ and $\phi_{fringe}$
 amp_fit_boundary =[];
 x_fit_boundary =[];
 y_fit_boundary =[];
@@ -262,4 +265,5 @@ mapb = flipud(mapa);
 colormap(mapb);
 box on;
 axis equal;
-%save B13_p0.mat y_plot_f x_plot_f amp_plot_f
+normalization_amp = normalization(x_plot_f,y_plot_f,amp_plot_f);
+%save B13_p0.mat y_plot_f x_plot_f amp_plot_f normalization_amp

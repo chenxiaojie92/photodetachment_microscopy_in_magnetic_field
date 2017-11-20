@@ -76,7 +76,7 @@ R =100;
 Jacob = matlabFunction(subs(Jt));%%(t phi theta)
 %% second part fringes on the detated plane
 T_cpu_1 = cputime;
-num_phi = 500;
+num_phi = 5;
 num_theta   = 200;
 num_point = num_phi*num_theta;
 initial_angle = zeros(num_point,2);%[theta phi]
@@ -274,9 +274,16 @@ T_cpu_2 = cputime;
 x_plot = [xmn*L_au x_fit_boundary];
 y_plot = [ymn*L_au y_fit_boundary];
 amp_plot = [amp_airya amp_fit_boundary];
+x_plot_f = [x_plot x_plot];
+y_plot_f = [y_plot -y_plot];
+amp_plot_f = [amp_plot amp_plot];
 figure();
-scatter(x_plot,y_plot,3,amp_plot,'filled')
+% scatter(x_plot,y_plot,3,amp_plot,'filled')
+scatter(x_plot_f,y_plot_f,3,amp_plot_f,'filled')
 mapa = gray;
 mapb = flipud(mapa);
 colormap(mapb);
+box on;
 axis equal;
+normalization_amp = normalization(x_plot_f,y_plot_f,amp_plot_f);
+%save B13_p0.mat y_plot_f x_plot_f amp_plot_f normalization_amp
